@@ -1,3 +1,7 @@
+if game.PlaceId ~= 155615604 then
+    return
+end
+
 
 --// =========================
 --// LOAD WINDUI
