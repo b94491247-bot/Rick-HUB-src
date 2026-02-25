@@ -93,7 +93,7 @@ Window:Tag({
     Title = "v1.0.0",
     Icon = "github",
     Color = Color3.fromHex("#00bfff"), -- ฟ้าสด
-    Radius = 5,
+    Radius = 10,
 })
 
 local CoreGui = game:GetService("CoreGui")
