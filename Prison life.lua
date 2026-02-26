@@ -477,6 +477,43 @@ Players.PlayerRemoving:Connect(clearESPGUN)
 
 
 
+-- ---------
+-- จับออร่า
+-- ----------
+
+
+
+local ArrestRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ArrestPlayer")
+local arrest distance = 30
+local isEnabled = false
+
+Tab:Toggle({
+    Title = "จับออร่า",
+    Value = false,
+    Callback = function(state)
+        isEnabled = state
+    end
+})
+while task.wait(0.02) do
+    if isEnabled then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    
+                    local distance = (myChar.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+                    
+                    if distance <= arrest distance then
+                        ArrestRemote:InvokeServer(player, 1)
+                    end
+                    
+                end
+            end
+        end
+    end
+end
+
 
 
 -- ----------
