@@ -481,6 +481,29 @@ Players.PlayerRemoving:Connect(clearESPGUN)
 -- จับออร่า
 -- ----------
 
+local plr = game.Players.LocalPlayer
+local arrestRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ArrestPlayer")
+local arrestAuraEnabled = false 
+local AURA_DISTANCE = 30
+local function arrestPlayer(target)
+    if target.Character then
+        arrestRemote:InvokeServer(target)
+    end
+end
+RunService.Heartbeat:Connect(function()
+    if not arrestAuraEnabled then return end
+    local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
+    for _, other in pairs(Players:GetPlayers()) do
+        if other ~= plr and other.Character and other.Character:FindFirstChild("HumanoidRootPart") then
+            local dist = (root.Position - other.Character.HumanoidRootPart.Position).Magnitude
+            if dist <= AURA_DISTANCE then
+                arrestPlayer(other)
+            end
+        end
+    end
+end)
 
 
 
@@ -620,40 +643,15 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/SUNRTX22/What_happen_
 local Tab = Window:Tab({Title = "MAIN", Icon = "list"})
 
 
-local ArrestRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ArrestPlayer")
-
-local arrest distance = 30
-local isEnabled = false
 
 Tab:Toggle({
     Title = "จับออร่า",
-    Desc = "",
+    Desc = "ต้องเป็นตำรวจ",
     Value = false,
-    Callback = function(state)
-        isEnabled = state
+    Callback = function(v)
+        arrestAuraEnabled = v
     end
 })
-
-while task.wait(0.02) do
-    if isEnabled then
-        for _, player in pairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                
-                local myChar = LocalPlayer.Character
-                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                    
-                    local distance = (myChar.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
-                    
-                    if distance <= arrest distance then
-                        ArrestRemote:InvokeServer(player, 1)
-                    end
-                    
-                end
-            end
-        end
-    end
-end
-
 
 
 Tab:Toggle({
