@@ -620,7 +620,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/SUNRTX22/What_happen_
 local Tab = Window:Tab({Title = "MAIN", Icon = "list"})
 
 
-
 local ArrestRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ArrestPlayer")
 
 local arrest distance = 30
@@ -628,6 +627,7 @@ local isEnabled = false
 
 Tab:Toggle({
     Title = "จับออร่า",
+    Desc = "",
     Value = false,
     Callback = function(state)
         isEnabled = state
@@ -638,15 +638,14 @@ while task.wait(0.02) do
     if isEnabled then
         for _, player in pairs(Players:GetPlayers()) do
             if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                
                 local myChar = LocalPlayer.Character
                 if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    
                     local distance = (myChar.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+                    
                     if distance <= arrest distance then
-                        if ArrestRemote.ClassName == "RemoteEvent" then
-                            ArrestRemote:FireServer(player, 1)
-                        elseif ArrestRemote.ClassName == "RemoteFunction" then
-                            ArrestRemote:InvokeServer(player, 1)
-                        end
+                        ArrestRemote:InvokeServer(player, 1)
                     end
                     
                 end
@@ -654,6 +653,7 @@ while task.wait(0.02) do
         end
     end
 end
+
 
 
 Tab:Toggle({
