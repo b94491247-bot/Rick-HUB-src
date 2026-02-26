@@ -168,7 +168,7 @@ local Cam = workspace.CurrentCamera
 local RS = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
-
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- CONFIG
 
@@ -484,6 +484,8 @@ Players.PlayerRemoving:Connect(clearESPGUN)
 -- ----------
 
 
+
+
 -- Settings
 local Body = {
     WalkSpeed = {
@@ -610,6 +612,39 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/SUNRTX22/What_happen_
 
 local Tab = Window:Tab({Title = "MAIN", Icon = "list"})
 
+
+
+local ArrestRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ArrestPlayer")
+local arrest distance = 30
+local isEnabled = false
+Tab:Toggle({
+    Title = "จับออร่า",
+    Desc = "จับคนที่อยู่ใกล้ใส่กุญแจ",
+    Value = false,
+    Callback = function(state)
+        isEnabled = state
+    end
+})
+
+while task.wait(0.02) do
+    if isEnabled then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    
+                    local distance = (myChar.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+                    
+                    if distance <= arrest distance then
+                        ArrestRemote:InvokeServer(player, 1)
+                    end
+                    
+                end
+            end
+        end
+    end
+end
 
 
 Tab:Toggle({
