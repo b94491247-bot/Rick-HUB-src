@@ -573,29 +573,6 @@ Players.PlayerRemoving:Connect(clearESPGUN)
 -- จับออร่า
 -- ----------
 
-local plr = game.Players.LocalPlayer
-local arrestRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ArrestPlayer")
-local arrestAuraEnabled = false 
-local AURA_DISTANCE = 30
-local function arrestPlayer(target)
-    if target.Character then
-        arrestRemote:InvokeServer(target)
-    end
-end
-RunService.Heartbeat:Connect(function()
-    if not arrestAuraEnabled then return end
-    local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-    if not root then return end
-
-    for _, other in pairs(Players:GetPlayers()) do
-        if other ~= plr and other.Character and other.Character:FindFirstChild("HumanoidRootPart") then
-            local dist = (root.Position - other.Character.HumanoidRootPart.Position).Magnitude
-            if dist <= AURA_DISTANCE then
-                arrestPlayer(other)
-            end
-        end
-    end
-end)
 
 
 
@@ -736,14 +713,6 @@ local Tab = Window:Tab({Title = "MAIN", Icon = "list"})
 
 
 
-Tab:Toggle({
-    Title = "จับออร่า",
-    Desc = "ต้องเป็นตำรวจ",
-    Value = false,
-    Callback = function(v)
-        arrestAuraEnabled = v
-    end
-})
 
 
 Tab:Toggle({
