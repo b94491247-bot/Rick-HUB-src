@@ -37,10 +37,10 @@ if A then
 B=
 A:CreateWindow
 {
-Title="MYSTIC HUB  |  Block Spin 🔫| Paid 💸",
+Title="RICK HUB [ Block spin ] [ Reskin ]",
 Icon="list",
-Author="HI! I'M KUNGHE I'M COOL :",
-Folder="MYSTIC HUB Now!!!",
+Author="Reskin by 009.exe ",
+Folder="RICK HUB!",
 Size=UDim2.fromOffset(650,400),
 Theme="Dark",
 Transparent=true,
@@ -3679,6 +3679,7 @@ end
 w={}
 end
 end
+
 )
 
 -- This file was protected using Luraph Obfuscator v14.6 [https://lura.ph/]
