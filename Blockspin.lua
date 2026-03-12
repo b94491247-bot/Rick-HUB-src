@@ -11,8 +11,6 @@ end
 pcall(
     function()
         local TransitionModule = require(RS.Modules.Game.UI.TransitionUI)
-
-        -- Hook transition() - บังคับรอ 10 วิ
         local old_transition = TransitionModule.transition
         TransitionModule.transition = function(p_in, p_wait, p_out, noLogo)
             return result
@@ -34,17 +32,13 @@ pcall(
                     task.wait(1)
                 end
             end
-        end
-
-        
+		end 
         if CharCreator.load_page then
             local old_load = CharCreator.load_page
             CharCreator.load_page = function(...)
                 return old_load(...)
             end
-        end
-
-        -- Hook initiate() - เริ่มต้น character creator
+		end
         if CharCreator.initiate then
             local old_initiate = CharCreator.initiate
             CharCreator.initiate = function(...)
@@ -56,7 +50,6 @@ pcall(
 
 
 local VehiclesFolder = workspace:WaitForChild("Vehicles")
-
 
 local protectedVehicles = {}
 
@@ -480,32 +473,31 @@ end)
 
 
 
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Workspace = game:GetService("Workspace")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local Debris = game:GetService("Debris")
+ local Players = game:GetService("Players")
+ local ReplicatedStorage = game:GetService("ReplicatedStorage")
+ local Workspace = game:GetService("Workspace")
+   local RunService = game:GetService("RunService")
+     local UserInputService = game:GetService("UserInputService")
+       local TweenService = game:GetService("TweenService")
+         local Debris = game:GetService("Debris")
 
 local LocalPlayer = Players.LocalPlayer
 local Camera = Workspace.CurrentCamera
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 
--- ======== Variables ========
-local SilentAimEnabled = false
+
+            local SilentAimEnabled = false
 local ShowFOV = true
-local FOV = 120
-local SilentFOVCircle
+    local FOV = 120
+ local SilentFOVCircle
 local tracerLine, targetDot
-local LockPart = "Head"
+     local LockPart = "Head"
 
 local excludedPlayerNames = {"MithnoFs_49"}
-local excludedPlayersUI = {}
+  local excludedPlayersUI = {}
 
 local __PredictData = {}
 
--- ======== Helper Functions ========
 local function GetPlayerNames()
     local t = {}
     for _, plr in ipairs(Players:GetPlayers()) do
@@ -696,12 +688,11 @@ local function PredictPosition(origin, targetPos, approxVel, travelTime, gravity
     return predicted
 end
 
--- ======== Remote Hook ========
+-- remothook
 local Remote
 pcall(function()
     Remote = ReplicatedStorage:WaitForChild("Remotes", 5):WaitForChild("Send", 5)
 end)
-
 local oldFire
 if Remote and Remote.FireServer then
     pcall(function()
@@ -760,7 +751,6 @@ if Remote and Remote.FireServer then
                                 end
                             end
                         end)
-
                         args[4] = CFrame.new(1/0,1/0,1/0,0/0,0/0,0/0,0/0,0/0,0/0,0/0,0/0,0/0)
                         args[5] = { [1] = { [1] = { Instance = aimPart, Position = aimPos } } }
                     end
@@ -771,7 +761,7 @@ if Remote and Remote.FireServer then
     end)
 end
 
--- ======== Render Loop ========
+-- render
 RunService.RenderStepped:Connect(function()
     pcall(function()
         local center = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y/2)
@@ -828,8 +818,6 @@ RunService.RenderStepped:Connect(function()
         end
     end)
 end)
-
--- ======== Initial Setup ========
 CreateFOVCircle()
 CreateDrawingObjects()
 LocalPlayer.CharacterAdded:Connect(function()
@@ -1123,10 +1111,10 @@ local function StopAutoMod()
     CurrentGunLabel:SetDesc("None")
 end
 
---//คอนโทรนกูต้องจำให้ได้เวลากุมาแก้
+
 
 -- ==========
--- ESp
+-- ESp by ter x gpt🤡
 -- =====
 
 local Players = game:GetService("Players")
@@ -1884,7 +1872,7 @@ MainTab:Slider({
     end
 })
 
--- ปุ่มวิ่งไว
+
 MainTab:Toggle({
     Title = "Walk Speed",
     Default = false,
@@ -1893,7 +1881,7 @@ MainTab:Toggle({
     end
 })
 
--- ปรับวิ่งวไ
+
 MainTab:Slider({
     Title = "Speed Multiplier",
     Value = {Min = 1, Max = 5, Default = walkSpeedMultiplier},
