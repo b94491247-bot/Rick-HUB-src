@@ -1518,7 +1518,18 @@ CombatTab:Dropdown({
 
 
 
-
+CombatTab:Toggle({
+    Title = "Anti Aim ",
+    Desc = "กันล็อค",
+    Default = getgenv().AntiAimAssiant,
+    Callback = function(v)
+        getgenv().AntiAimAssiant = v
+        s:s("Combat.antiaim", v)
+        if v then
+        else
+        end
+    end
+})
 
 
 local WeaponTab = Window:Tab({Title = "Gun Mod", Icon = "hammer"})
@@ -1858,25 +1869,45 @@ ChaterTab:Toggle({
     end
 })
 
-
-
-ChaterTab:Slider({Title = "Jump power valu (ปรับความสูง)", Step = 5, Value = {Min = 20, Max = 80, Default = 70}, Callback = function(v) jumpPower = v end})
-
-
-
-
-CombatTab:Toggle({
-    Title = "Anti Aim ",
-    Desc = "กันล็อค",
-    Default = getgenv().AntiAimAssiant,
-    Callback = function(v)
-        getgenv().AntiAimAssiant = v
-        s:s("Combat.antiaim", v)
-        if v then
-        else
-        end
+ChaterTab:Toggle({
+    Title = "Jump boots",
+    Desc = "โดดสูง",
+    Value = false,
+    Callback = function(state)
+        local plr = game.Players.LocalPlayer
+        local function setJumpHeight()
+            local char = plr.Character
+            if not char then return end
+            local hum = char:FindFirstChild("Humanoid")
+            if hum then
+                hum.JumpHeight = state and 25 or 7.2
+            end
+			end
+        setJumpHeight()
+        
+        if state then
+            if not plr._jumpConnection then
+                plr._jumpConnection = plr.CharacterAdded:Connect(function()
+                    wait(0.5)
+                    setJumpHeight()
+                end)
+            end
+			else
+            if plr._jumpConnection then
+                plr._jumpConnection:Disconnect()
+                plr._jumpConnection = nil
+				end
+            local char = plr.Character
+            if char then
+                local hum = char:FindFirstChild("Humanoid")
+                if hum then
+                    hum.JumpHeight = 7.2
+                end
+            end
+			end
     end
 })
+
 
 ChaterTab:Divider()
 ChaterTab:Section({Title = "Mod"})
