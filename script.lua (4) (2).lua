@@ -1820,7 +1820,7 @@ EspTab:Toggle({
 })
 
 
-Tab:Colorpicker({
+EspTab:Colorpicker({
     Title = "Highlight Color",
     Desc = "สีไฮไลท์",
     Default = HighlightColor,
@@ -1841,7 +1841,7 @@ Tab:Colorpicker({
 })
 
 
-Tab:Toggle({
+EspTab:Toggle({
     Title = "Highlight ESP",
     Desc = "ไฮไลท์ที่เพเยอร์",
     Value = false,
