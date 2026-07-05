@@ -888,6 +888,51 @@ Players.PlayerAdded:Connect(CreateESP)
 
 
 
+--  Esp Highlights
+
+local Players = game:GetService("Players")
+local esphighlight = false
+local HighlightColor = Color3.fromRGB(255, 255, 255)
+
+local function CreateESP(player)
+    if player == Players.LocalPlayer then return end
+    
+    local function Setup(character)
+        local old = character:FindFirstChild("ESP_Highlight")
+        if old then old:Destroy() end
+        
+        local highlight = Instance.new("Highlight")
+        highlight.Name = "ESP_Highlight"
+        highlight.Adornee = character
+        highlight.FillColor = HighlightColor
+        highlight.OutlineColor = HighlightColor
+        highlight.FillTransparency = 0.5
+        highlight.OutlineTransparency = 0
+        highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        highlight.Enabled = esphighlight
+        highlight.Parent = character
+    end
+    
+    if player.Character then
+        Setup(player.Character)
+    end
+    
+    player.CharacterAdded:Connect(Setup)
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+    CreateESP(player)
+end
+
+Players.PlayerAdded:Connect(CreateESP)
+
+Players.PlayerRemoving:Connect(function(player)
+    if player.Character then
+        local highlight = player.Character:FindFirstChild("ESP_Highlight")
+        if highlight then highlight:Destroy() end
+    end
+end)
+
 
 
 
@@ -1775,7 +1820,43 @@ EspTab:Toggle({
 })
 
 
+Tab:Colorpicker({
+    Title = "Highlight Color",
+    Desc = "สีไฮไลท์",
+    Default = HighlightColor,
+    Transparency = 0,
+    Locked = false,
+    Callback = function(color)
+        HighlightColor = color
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player.Character then
+                local highlight = player.Character:FindFirstChild("ESP_Highlight")
+                if highlight then
+                    highlight.FillColor = color
+                    highlight.OutlineColor = color
+                end
+            end
+        end
+    end
+})
 
+
+Tab:Toggle({
+    Title = "Highlight ESP",
+    Desc = "ไฮไลท์ที่เพเยอร์",
+    Value = false,
+    Callback = function(state)
+        esphighlight = state
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player.Character then
+                local highlight = player.Character:FindFirstChild("ESP_Highlight")
+                if highlight then
+                    highlight.Enabled = state
+                end
+            end
+        end
+    end
+})
 
 
 
