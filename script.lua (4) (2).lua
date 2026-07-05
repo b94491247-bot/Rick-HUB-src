@@ -797,90 +797,97 @@ local RunService = game:GetService("RunService")
 
 local LocalPlayer = Players.LocalPlayer
 
-local NameESP = true
-local DistanceESP = true
+local NameESP = false 
+local DistanceESP = false
+
+
 
 local function CreateESP(player)
-	if player == LocalPlayer then return end
+    if player == LocalPlayer then return end
 
-	local function Setup(character)
-		local head = character:WaitForChild("Head", 5)
-		local hrp = character:WaitForChild("HumanoidRootPart", 5)
-		if not head or not hrp then return end
+    local function Setup(character)
+        local head = character:WaitForChild("Head", 5)
+        local hrp = character:WaitForChild("HumanoidRootPart", 5)
+        if not head or not hrp then return end
 
-		local old = head:FindFirstChild("ESP")
-		if old then
-			old:Destroy()
-		end
+        local old = head:FindFirstChild("ESP")
+        if old then
+            old:Destroy()
+        end
 
-		local gui = Instance.new("BillboardGui")
-		gui.Name = "ESP"
-		gui.Adornee = head
-		gui.Size = UDim2.new(0, 120, 0, 16)
-		gui.StudsOffset = Vector3.new(0, 2, 0)
-		gui.AlwaysOnTop = true
-		gui.Parent = head
+        local gui = Instance.new("BillboardGui")
+        gui.Name = "ESP"
+        gui.Adornee = head
+        gui.Size = UDim2.new(0, 120, 0, 16)
+        gui.StudsOffset = Vector3.new(0, 2, 0)
+        gui.AlwaysOnTop = true
+        gui.Parent = head
 
-		local label = Instance.new("TextLabel")
-		label.Size = UDim2.fromScale(1, 1)
-		label.BackgroundTransparency = 1
-		label.Font = Enum.Font.GothamBold
-		label.TextSize = 11
-		label.TextColor3 = Color3.fromRGB(255, 255, 255)
-		label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-		label.TextStrokeTransparency = 0
-		label.TextXAlignment = Enum.TextXAlignment.Center
-		label.TextYAlignment = Enum.TextYAlignment.Center
-		label.Parent = gui
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.fromScale(1, 1)
+        label.BackgroundTransparency = 1
+        label.Font = Enum.Font.GothamBold
+        label.TextSize = 11
+        label.TextColor3 = Color3.fromRGB(255, 255, 255)
+        label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+        label.TextStrokeTransparency = 0
+        label.TextXAlignment = Enum.TextXAlignment.Center
+        label.TextYAlignment = Enum.TextYAlignment.Center
+        label.Parent = gui
 
-		local connection
-		connection = RunService.RenderStepped:Connect(function()
-			if not character.Parent then
-				connection:Disconnect()
-				return
-			end
+        local connection
+        connection = RunService.RenderStepped:Connect(function()
+            if not character.Parent then
+                connection:Disconnect()
+                return
+            end
 
-			local myChar = LocalPlayer.Character
-			local myHRP = myChar and myChar:FindFirstChild("HumanoidRootPart")
-			if not myHRP then return end
+            local myChar = LocalPlayer.Character
+            local myHRP = myChar and myChar:FindFirstChild("HumanoidRootPart")
+            if not myHRP then return end
 
-			local distance = math.floor((myHRP.Position - hrp.Position).Magnitude)
+            local distance = math.floor((myHRP.Position - hrp.Position).Magnitude)
 
-			if NameESP and DistanceESP then
-				label.Text = player.Name .. " | [" .. distance .. "]"
-				gui.Size = UDim2.new(0, 120, 0, 16)
-			elseif NameESP then
-				label.Text = player.Name
-				gui.Size = UDim2.new(0, 70, 0, 16)
-			elseif DistanceESP then
-				label.Text = "[" .. distance .. "]"
-				gui.Size = UDim2.new(0, 50, 0, 16)
-			else
-				label.Text = ""
-			end
+            if NameESP and DistanceESP then
+                label.Text = player.Name .. " | [" .. distance .. "]"
+                gui.Size = UDim2.new(0, 120, 0, 16)
+            elseif NameESP then
+                label.Text = player.Name
+                gui.Size = UDim2.new(0, 70, 0, 16)
+            elseif DistanceESP then
+                label.Text = "[" .. distance .. "]"
+                gui.Size = UDim2.new(0, 50, 0, 16)
+            else
+                label.Text = ""
+            end
 
-			-- เปลี่ยนเป็นสีแดงเมื่อเป็นเป้าหมาย
-			local target = GetClosestTarget()
-			if target == character then
-				label.TextColor3 = Color3.fromRGB(255, 0, 0)
-			else
-				label.TextColor3 = Color3.fromRGB(255, 255, 255)
-			end
-		end)
-	end
+            -- เปลี่ยนเป็นสีแดงเฉพาะเมื่อ Silent Aim เปิดอยู่และเป็นเป้าหมาย
+            if SilentAim then  -- ตรวจสอบว่า Silent Aim เปิดอยู่
+                local target = GetClosestTarget()
+                if target == character then
+                    label.TextColor3 = Color3.fromRGB(255, 0, 0)  -- สีแดง
+                else
+                    label.TextColor3 = Color3.fromRGB(255, 255, 255)  -- สีขาว
+                end
+            else
+                label.TextColor3 = Color3.fromRGB(255, 255, 255)  -- สีขาว (ไม่เปลี่ยนสี)
+            end
+        end)
+    end
 
-	if player.Character then
-		Setup(player.Character)
-	end
+    if player.Character then
+        Setup(player.Character)
+    end
 
-	player.CharacterAdded:Connect(Setup)
+    player.CharacterAdded:Connect(Setup)
 end
 
 for _, player in ipairs(Players:GetPlayers()) do
-	CreateESP(player)
+    CreateESP(player)
 end
 
 Players.PlayerAdded:Connect(CreateESP)
+
 
 
 
@@ -1900,21 +1907,23 @@ WeaponTab:Toggle({
 
 
 local EspTab = Window:Tab({Title = "ESP", Icon = "eye"})
-Tab:Toggle({
-	Title = "Name ESP",
-	Value = true,
-	Callback = function(state)
-		NameESP = state
-	end
+EspTab:Toggle({
+    Title = "Name ESP",
+    Value = true,
+    Callback = function(state)
+        NameESP = state
+    end
 })
 
-Tab:Toggle({
-	Title = "Distance ESP",
-	Value = true,
-	Callback = function(state)
-		DistanceESP = state
-	end
+EspTab:Toggle({
+    Title = "Distance ESP",
+    Value = true,
+    Callback = function(state)
+        DistanceESP = state
+    end
 })
+
+
 
 
 
